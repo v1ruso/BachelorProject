@@ -33,18 +33,19 @@ for filename in glob.glob(DATASET_FILEPATH + 'prime_midi/*.mid'):
             else:
                 minor_notes += len(instrument.notes)
             for note in instrument.notes:
-                pitches[pitches_entry][note.pitch-(index_key%PITCHES_PER_OCTAVE)] += 1
-if major_notes!=0:
+                pitches[pitches_entry][note.pitch -
+                                       (index_key % PITCHES_PER_OCTAVE)] += 1
+if major_notes != 0:
     pitches["major"] /= major_notes
-if minor_notes!=0:
+if minor_notes != 0:
     pitches["minor"] /= minor_notes
-
 
 for filename in glob.glob(DATASET_FILEPATH + 'prime_midi/*.mid'):
     # generate continuation from file
     input_data = pretty_midi.PrettyMIDI(filename)
     result = pretty_midi.PrettyMIDI()
-    result_program = pretty_midi.instrument_name_to_program("Acoustic Grand Piano")
+    result_program = pretty_midi.instrument_name_to_program(
+        "Acoustic Grand Piano")
     result_instrument = pretty_midi.Instrument(program=result_program)
     # key
     key = find_key(filename)
@@ -52,14 +53,14 @@ for filename in glob.glob(DATASET_FILEPATH + 'prime_midi/*.mid'):
     ends_with_major = key.endswith("major")
     pitches_entry = "major" if ends_with_major else "minor"
     # relative pitch dictionary
-    duration_dict = {} 
+    duration_dict = {}
     velocity_dict = {}
     time_between_notes = {}
     # set up prime notes
     number_of_notes = 0
     for instrument in input_data.instruments:
         if not instrument.is_drum:
-            number_of_notes+=len(instrument.notes)
+            number_of_notes += len(instrument.notes)
             for note in instrument.notes:
                 result_instrument.notes.append(note)
                 # duration
@@ -72,37 +73,54 @@ for filename in glob.glob(DATASET_FILEPATH + 'prime_midi/*.mid'):
                     velocity_dict[note.velocity] += 1
                 else:
                     velocity_dict[note.velocity] = 1
-            for i in range(len(instrument.notes)-1):
+            for i in range(len(instrument.notes) - 1):
                 # difference between note starts
-                diff_between_starts = instrument.notes[i+1].start - instrument.notes[i].start
+                diff_between_starts = instrument.notes[
+                    i + 1].start - instrument.notes[i].start
                 if diff_between_starts in time_between_notes:
                     time_between_notes[diff_between_starts] += 1
                 else:
                     time_between_notes[diff_between_starts] = 1
 
     csv_output_file = ""
-    if number_of_notes > 1:    
+    if number_of_notes > 1:
         for d in duration_dict.keys():
             duration_dict[d] /= number_of_notes
         for v in velocity_dict.keys():
             velocity_dict[v] /= number_of_notes
         for t in time_between_notes.keys():
-            time_between_notes[t] /= (number_of_notes-1)
+            time_between_notes[t] /= (number_of_notes - 1)
         nb_iterations = 100
         for i in range(nb_iterations):
-            last_note = result_instrument.notes[len(result_instrument.notes)-1]
-            new_note_duration = random.choices(list(duration_dict.keys()),weights=duration_dict.values())[0]
-            new_note_velocity = int(random.choices(list(velocity_dict.keys()),weights=velocity_dict.values())[0])
-            new_note_pitch = (random.choices(range(NUMBER_OF_PITCHES),weights=pitches[pitches_entry])[0] + (index_key%PITCHES_PER_OCTAVE))%PITCHES_PER_OCTAVE + 60
-            new_note_start = last_note.start + random.choices(list(time_between_notes.keys()),weights=time_between_notes.values())[0]
-            new_note = pretty_midi.Note(velocity=new_note_velocity,pitch=new_note_pitch,start=new_note_start, end=new_note_start+new_note_duration)
-            csv_output_file+=str(new_note_start) + "," + str(new_note_pitch) + "," + str(new_note_pitch-6) + "," + str(new_note_duration) + "," +  str(4) + "\n"
+            last_note = result_instrument.notes[len(result_instrument.notes) -
+                                                1]
+            new_note_duration = random.choices(
+                list(duration_dict.keys()), weights=duration_dict.values())[0]
+            new_note_velocity = int(
+                random.choices(list(velocity_dict.keys()),
+                               weights=velocity_dict.values())[0])
+            new_note_pitch = (
+                random.choices(range(NUMBER_OF_PITCHES),
+                               weights=pitches[pitches_entry])[0] +
+                (index_key % PITCHES_PER_OCTAVE)) % PITCHES_PER_OCTAVE + 60
+            new_note_start = last_note.start + random.choices(
+                list(time_between_notes.keys()),
+                weights=time_between_notes.values())[0]
+            new_note = pretty_midi.Note(velocity=new_note_velocity,
+                                        pitch=new_note_pitch,
+                                        start=new_note_start,
+                                        end=new_note_start + new_note_duration)
+            csv_output_file += str(new_note_start) + "," + str(
+                new_note_pitch) + "," + str(new_note_pitch - 6) + "," + str(
+                    new_note_duration) + "," + str(4) + "\n"
             result_instrument.notes.append(new_note)
     result.instruments.append(result_instrument)
     filename = filename.split("/")
-    filename = filename[len(filename)-1]
+    filename = filename[len(filename) - 1]
     result.write(DATASET_FILEPATH + "out_midi/" + filename)
-    file = open(DATASET_FILEPATH + "out_csv/" + filename[:len(filename)-3] + "csv", "w")
+    file = open(
+        DATASET_FILEPATH + "out_csv/" + filename[:len(filename) - 3] + "csv",
+        "w")
     file.write(csv_output_file)
     file.close()
 """
