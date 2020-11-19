@@ -22,23 +22,18 @@ def similarity_score_with_translation(seq_main,seq_compared):
     max_number_of_sim_notes = 0
     for current_translation_vector in all_pairs:
         current_number_of_sim_notes = 0
-        diff_onsets = 0
-        diff_pitches = 0
+        diff_onsets = current_translation_vector[0].start - current_translation_vector[1].start
+        diff_pitches = current_translation_vector[0].pitch - current_translation_vector[1].pitch
         for j in range(len(seq_main)):
-            diff_onsets = current_translation_vector[
-                0].start - current_translation_vector[1].start
-            diff_pitches = current_translation_vector[
-                0].pitch - current_translation_vector[1].pitch
             new_note = pretty_midi.Note(velocity=seq_main[j].velocity,
                                         pitch=seq_main[j].pitch - diff_pitches,
                                         start=seq_main[j].start - diff_onsets,
-                                        end=seq_main[j].end + diff_onsets)
+                                        end=seq_main[j].end - diff_onsets)
             if is_note_in_seq(new_note, seq_compared):
                 current_number_of_sim_notes += 1
         if current_number_of_sim_notes > max_number_of_sim_notes:
             max_number_of_sim_notes = current_number_of_sim_notes
     return max_number_of_sim_notes / len(seq_main)
-
 
 def similarity_score(seq_main, seq_compared):
     # computes how similar two sequences are
@@ -81,3 +76,24 @@ def biggest_substring(seq_main, seq_compared):
                 else:
                     A[i][j] = 0
         return ret
+
+def biggest_submelody(seq_main, seq_compared):
+    """
+    Compares all possible substring of seq_compared to seq_main.
+    Returns the pattern which has the biggest similarity with seq_main.
+    In other words, it returns the biggest pattern that appears in both melodies.
+    seq_main: pretty_MIDI sequence of notes (monophonic)
+    seq_compared: pretty_MIDI sequence of notes (monophonic)
+    """
+    max_subset = np.array([])
+    max_similarity = 0
+    for i in range(len(seq_compared)):
+        for j in range(i + 1, len(seq_compared) + 1):
+            current_subset = seq_compared[i:j]
+            current_similarity_score = similarity_score_with_translation(seq_main, current_subset)
+            print(str(i)+","+str(j)+":"+str(current_similarity_score))
+            if current_similarity_score > max_similarity:
+                max_similarity = current_similarity_score
+                max_subset = current_subset
+    print("Max similarity is: "+ str(max_similarity))
+    return max_subset

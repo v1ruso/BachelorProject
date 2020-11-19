@@ -2,6 +2,8 @@ import unittest
 import numpy as np
 from similarity_measure import similarity_score
 from similarity_measure import biggest_substring
+from similarity_measure import biggest_submelody
+import pretty_midi
 class SimilarityMeasureTest(unittest.TestCase):
     """def test_similarity_score_works_for_same_length(self):
         seq_main = np.array([0,1,2,3,4,5])
@@ -48,6 +50,11 @@ class SimilarityMeasureTest(unittest.TestCase):
         for pair in zip(biggest_substring(seq_main,seq_compared), np.array([1,2,3])):
             self.assertEqual(pair[0], pair[1])
 
-
+    def test_biggest_submelody(self):
+        input_data_1 = pretty_midi.PrettyMIDI("MIDI_samples/yankee_doodle.mid")
+        seq_main = input_data_1.instruments[0].notes
+        input_data_2 = pretty_midi.PrettyMIDI("MIDI_samples/midi_sample_a_minor.mid")
+        seq_compared = input_data_2.instruments[0].notes
+        biggest_submelody(seq_main,seq_compared)
 if __name__ == '__main__':
     unittest.main()
