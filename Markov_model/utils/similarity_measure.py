@@ -107,7 +107,7 @@ def find_biggest_recurring_pattern(seq):
     Code taken from https://www.geeksforgeeks.org/longest-repeating-and-non-overlapping-substring/
     """
     A = np.zeros((len(seq)+1,len(seq)+1),dtype=int)
-    res = ""
+    res = np.zeros()
     res_length = 0
     index = 0
     for i in range(1,len(seq)+1):
@@ -122,6 +122,6 @@ def find_biggest_recurring_pattern(seq):
 
     if (res_length > 0): 
         for i in range(index - res_length + 1, index + 1): 
-            res = res + str(seq[i - 1]) 
+            np.append(res,str(seq[i - 1])) 
   
-    return res 
+    return res

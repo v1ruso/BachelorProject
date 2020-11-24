@@ -1,6 +1,16 @@
 import pretty_midi
 import numpy as np
 
+def find_closest(durations,duration):
+    closest = durations[0]
+    distance = float("inf")
+    for d in durations:
+        val = np.abs(d-duration)
+        if val < distance:
+            distance = val
+            closest = d
+    return closest
+
 def parse_midi(notes,round_durations=4):
     """
     Parse midi notes into four lists: pitches, onsets, velocities and durations

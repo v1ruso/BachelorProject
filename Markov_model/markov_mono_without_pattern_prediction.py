@@ -5,7 +5,7 @@ import pretty_midi
 import numpy as np
 import glob
 NUMBER_OF_PITCHES = 128
-DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_large/'
+DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_small/'
 """
 # create database
 pitch_array = np.zeros((NUMBER_OF_PITCHES, NUMBER_OF_PITCHES+1), dtype=float)
@@ -85,7 +85,7 @@ for filename in glob.glob(DATASET_FILEPATH + 'prime_midi/*.mid'):
     result.instruments.append(result_instrument)
     filename = filename.split("/")
     filename = filename[len(filename)-1]
-    result.write(DATASET_FILEPATH + "out/" + filename)
+    result.write(DATASET_FILEPATH + "out_midi/" + filename)
     file = open(DATASET_FILEPATH + "out_csv/" + filename[:len(filename)-3] + "csv", "w")
     file.write(csv_output_file)
     file.close()
