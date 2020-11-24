@@ -27,7 +27,7 @@ for filename in glob.glob(DATASET_FILEPATH + "prime_midi/*.mid"):
 
         markov_pitches = markov_model_first_order(pitches)
         markov_velocities = markov_model_first_order(velocities)
-        markov_durations = markov_model_first_order(durations)
+        #markov_durations = markov_model_first_order(durations)
         markov_diff_onsets = markov_model_first_order(diff_onsets)
 
         # write current notes, each note ends when the next note starts

@@ -1,11 +1,16 @@
 import pretty_midi
 import numpy as np
 
-def find_closest(durations,duration):
-    closest = durations[0]
+def find_closest(values,val):
+    """
+    Finds the closest value in the list.
+    values: array-like of possible values
+    val: value to compare with all the values in the list.
+    """
+    closest = values[0]
     distance = float("inf")
-    for d in durations:
-        val = np.abs(d-duration)
+    for d in values:
+        val = np.abs(d-val)
         if val < distance:
             distance = val
             closest = d
