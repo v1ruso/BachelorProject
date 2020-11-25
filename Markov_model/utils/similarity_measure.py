@@ -40,7 +40,7 @@ def similarity_score(seq_main, seq_compared):
     # higher returned values mean higher similarities
     # returns values between 0 and 1
     if len(seq_main) == 0 or len(seq_compared) == 0:
-        return 1.0
+        return 0.0
     else:
         A = np.zeros((len(seq_compared)+1, len(seq_main)+1))
         W_insert = -0.5
@@ -107,7 +107,7 @@ def find_biggest_recurring_pattern(seq):
     Code taken from https://www.geeksforgeeks.org/longest-repeating-and-non-overlapping-substring/
     """
     A = np.zeros((len(seq)+1,len(seq)+1),dtype=int)
-    res = np.zeros()
+    res = list()
     res_length = 0
     index = 0
     for i in range(1,len(seq)+1):
@@ -122,6 +122,6 @@ def find_biggest_recurring_pattern(seq):
 
     if (res_length > 0): 
         for i in range(index - res_length + 1, index + 1): 
-            np.append(res,str(seq[i - 1])) 
+            res = np.append(res,seq[i - 1]) 
   
     return res
