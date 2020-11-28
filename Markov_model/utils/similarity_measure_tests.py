@@ -4,7 +4,8 @@ from similarity_measure import similarity_score
 from similarity_measure import biggest_substring
 from similarity_measure import biggest_submelody
 from similarity_measure import count_substring_in_string
-from similarity_measure import find_biggest_recurring_pattern
+from similarity_measure import find_all_occurrences_and_indexes
+from similarity_measure import first_order_markov_from_patterns
 import pretty_midi
 from midi_transform import parse_midi
 class SimilarityMeasureTest(unittest.TestCase):
@@ -71,16 +72,31 @@ class SimilarityMeasureTest(unittest.TestCase):
         substring = "0123" 
         self.assertEqual(count_substring_in_string(substring,string),3)
         self.assertEqual(count_substring_in_string(substring+str(4),string),1)
-
+    """
     def test_find_biggest_recurring_pattern(self):
         seq = np.array([0,1,2,3,4,1,2,3,0,1,2,4,0,1,2,3,4])
         for pair in zip(find_biggest_recurring_pattern(seq),np.array([0,1,2,3,4])):
             self.assertEqual(pair[0],pair[1])
-    
+    """
+    def test_find_all_recurring_pattern(self):
+        print("\n")
+        seq = "0123"
+        print(seq)
+        list_patterns,list_indexes = find_all_occurrences_and_indexes(seq)
+        print("Patterns:")
+        print(list_patterns)
+
+        print("\nIndexes")
+        print(list_indexes)
+
+        print(first_order_markov_from_patterns(seq,list_patterns,list_indexes))
+
+    """
     def test_find_recurring_pattern_in_midi(self):
         input_data = pretty_midi.PrettyMIDI("../MIDI_samples/midi_sample_c_major.mid")
         pitches, onsets, velocities, durations = parse_midi(input_data.instruments[0].notes)
         for pair in zip(find_biggest_recurring_pattern(pitches),np.array([67,69,67,65,64,60])):
             self.assertEqual(pair[0],pair[1])
+    """
 if __name__ == '__main__':
     unittest.main()

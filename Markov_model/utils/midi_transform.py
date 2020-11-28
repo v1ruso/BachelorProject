@@ -47,11 +47,8 @@ def markov_model_first_order(table):
     ret = {}
     length = len(table)
     assert length > 0
-    # TODO I fixed the problem of unknown pitches reusing the first note as 
-    # if it was the last, resulting in basically a cyclic array
-    table = np.append(table,table[0])
     nb_dict = {}
-    for i in range(length):
+    for i in range(length-1):
         item = table[i]
         next_item = table[i+1]
         if item in ret:
@@ -67,5 +64,19 @@ def markov_model_first_order(table):
     for key_1 in ret.keys():
         for key_2 in ret[key_1].keys():
             ret[key_1][key_2] /= nb_dict[key_1]
+
+    # special case for the last element, which doesn't always have a next element
+    # need to "fallback" -> go back to a known state
+    last_item = table[length-1]
+    if last_item not in ret:
+        ret[last_item] = {}
+        for i in range(length):
+            next_item = table[i]
+            if next_item in ret[last_item]:
+                ret[last_item][next_item] += 1
+            else:
+                ret[last_item][next_item] = 1
+        for key in ret[last_item].keys():
+            ret[last_item][key] /= length
     return ret
 
