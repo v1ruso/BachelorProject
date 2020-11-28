@@ -79,18 +79,13 @@ class SimilarityMeasureTest(unittest.TestCase):
             self.assertEqual(pair[0],pair[1])
     """
     def test_find_all_recurring_pattern(self):
-        print("\n")
         seq = "0123"
-        print(seq)
         list_patterns,list_indexes = find_all_occurrences_and_indexes(seq)
-        print("Patterns:")
-        print(list_patterns)
-
-        print("\nIndexes")
-        print(list_indexes)
 
         print(first_order_markov_from_patterns(seq,list_patterns,list_indexes))
 
+    def test_find_pattern_in_melody(self):
+        print()
     """
     def test_find_recurring_pattern_in_midi(self):
         input_data = pretty_midi.PrettyMIDI("../MIDI_samples/midi_sample_c_major.mid")

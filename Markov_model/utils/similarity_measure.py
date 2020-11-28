@@ -106,7 +106,7 @@ def find_biggest_recurring_pattern(seq,special_char = ' '):
     Find the biggest recurring pattern in the array of pitches
     Dynamic programming: longest repeating and non-overlapping substring
     Finds result in O(n^2)
-    Code taken from https://www.geeksforgeeks.org/longest-repeating-and-non-overlapping-substring/
+    Code inspired by https://www.geeksforgeeks.org/longest-repeating-and-non-overlapping-substring/
     Returns the biggest sequence and the index of the first time it appears
     """
     A = np.zeros((len(seq)+1,len(seq)+1),dtype=int)
@@ -129,6 +129,12 @@ def find_biggest_recurring_pattern(seq,special_char = ' '):
     return res, index-res_length
 
 def find_occurrences_and_indexes(seq):
+    """
+    Given a sequence, finds the biggest recurring pattern in it, and replaces
+    it with " " (space character). Also returns the indexes where it occurs.
+    Ex: seq=01201, then the biggest recurring pattern is "01", the indexes would
+    be 0 and 3, and the resulting string is "  2  "
+    """
     res, index_first_occurrance = find_biggest_recurring_pattern(seq)
     if res=="":
         return seq, None, list()
@@ -154,6 +160,10 @@ def find_occurrences_and_indexes(seq):
     return temp_seq, res, index_occurrences
 
 def find_all_occurrences_and_indexes(seq):
+    """
+    Given a string, find all patterns in it and their start indices
+    Ex: seq = 01201. list_patterns = ["01","2"], list_indexes = [[0,3],[2]]
+    """
     list_patterns = list()
     list_indexes = list()
     res = ""
@@ -170,6 +180,15 @@ def find_all_occurrences_and_indexes(seq):
     return list_patterns, list_indexes
 
 def first_order_markov_from_patterns(seq,list_pattern,list_indexes):
+    """
+    Given a string, a list of patterns and its indexes, find the first order markov model
+    of the patterns.
+    Ex: seq = "01201", list_patterns = ["01","2"] and list_indexes = [[0,3],[2]]
+    The result would be {0:{1:1.0},1:{0:1.0}}.
+
+    In other words, the first pattern "01" (index 0) is followed by the second pattern "2" (index 1)
+    with probability 1. Same goes the other way around.
+    """
     index_to_pattern_index = {}
     for i in range(len(list_indexes)):
         for j in range(len(list_indexes[i])):
