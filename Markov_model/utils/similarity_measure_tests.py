@@ -60,12 +60,12 @@ class SimilarityMeasureTest(unittest.TestCase):
         input_data_2 = pretty_midi.PrettyMIDI("../MIDI_samples/yankee_doodle_slower.mid")
         seq_compared = input_data_2.instruments[0].notes
         #print(biggest_submelody(seq_main,seq_compared))
-        result = pretty_midi.PrettyMIDI()
+        """result = pretty_midi.PrettyMIDI()
         result_program = pretty_midi.instrument_name_to_program("Acoustic Grand Piano")
         result_instrument = pretty_midi.Instrument(program=result_program)
         result_instrument.notes = biggest_submelody(seq_main,seq_compared)
         result.instruments.append(result_instrument)
-        result.write("../MIDI_samples/test_biggest_submelody.mid")
+        result.write("../MIDI_samples/test_biggest_submelody.mid")"""
 
     def test_count_substring_in_string(self):
         string = "01234012321244324102340123"
@@ -84,8 +84,8 @@ class SimilarityMeasureTest(unittest.TestCase):
 
         print(first_order_markov_from_patterns(seq,list_patterns,list_indexes))
 
-    def test_find_pattern_in_melody(self):
-        print()
+    """def test_find_pattern_in_melody(self):
+        print()"""
     """
     def test_find_recurring_pattern_in_midi(self):
         input_data = pretty_midi.PrettyMIDI("../MIDI_samples/midi_sample_c_major.mid")

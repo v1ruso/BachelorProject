@@ -135,11 +135,11 @@ def find_occurrences_and_indexes(seq):
     Ex: seq=01201, then the biggest recurring pattern is "01", the indexes would
     be 0 and 3, and the resulting string is "  2  "
     """
-    res, index_first_occurrance = find_biggest_recurring_pattern(seq)
+    res, index_first_occurrence = find_biggest_recurring_pattern(seq)
     if res=="":
         return seq, None, list()
-    temp_seq = seq[0:index_first_occurrance]
-    i = index_first_occurrance
+    temp_seq = seq[0:index_first_occurrence]
+    i = index_first_occurrence
     index_occurrences = list()
     while i < len(seq):
         is_start = False
@@ -195,7 +195,7 @@ def first_order_markov_from_patterns(seq,list_pattern,list_indexes):
             index_to_pattern_index[list_indexes[i][j]] = i
     pattern_indexes_seq = ""
     if len(index_to_pattern_index.keys())>0:
-        head = list(index_to_pattern_index.keys())[0]
+        head = 0
         while head<len(seq):
             pattern_indexes_seq += str(index_to_pattern_index[head])
             head += len(list_pattern[index_to_pattern_index[head]])
