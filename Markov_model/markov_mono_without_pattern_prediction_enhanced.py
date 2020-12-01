@@ -65,7 +65,7 @@ for filename in glob.glob(DATASET_FILEPATH + "prime_midi/*.mid"):
         result.instruments.append(result_instrument)
         filename = filename.split("/")
         filename = filename[len(filename)-1]
-        result.write(DATASET_FILEPATH + "out_midi/" + filename)
-        file = open(DATASET_FILEPATH + "out_csv/" + filename[:len(filename)-3] + "csv", "w")
+        result.write(DATASET_FILEPATH + "markov_without_prediction_midi/" + filename)
+        file = open(DATASET_FILEPATH + "markov_without_prediction_csv/" + filename[:len(filename)-3] + "csv", "w")
         file.write(csv_output_file)
         file.close()

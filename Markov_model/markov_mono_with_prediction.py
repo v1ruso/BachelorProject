@@ -8,7 +8,7 @@ from utils.midi_transform import find_closest
 from utils.midi_transform import midi_to_csv
 from utils.pattern_discovery import first_order_markov_with_patterns
 DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_small/'
-NB_ITERATIONS = 20
+NB_ITERATIONS = 40
 
 for filename in glob.glob(DATASET_FILEPATH + "prime_midi/*.mid"):
     input_data = pretty_midi.PrettyMIDI(filename)
@@ -62,6 +62,6 @@ for filename in glob.glob(DATASET_FILEPATH + "prime_midi/*.mid"):
     result.instruments.append(result_instrument)
     filename = filename.split("/")
     filename = filename[len(filename)-1]
-    result.write(DATASET_FILEPATH + "out_midi/" + filename)
+    result.write(DATASET_FILEPATH + "markov_with_prediction_midi/" + filename)
     # 5) write result into csv file
-    midi_to_csv(notes[len(seq_temp):],DATASET_FILEPATH + "out_csv/" + filename[:len(filename)-3] + "csv")
+    midi_to_csv(notes[len(seq_temp):],DATASET_FILEPATH + "markov_with_prediction_csv/" + filename[:len(filename)-3] + "csv")
