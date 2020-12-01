@@ -80,3 +80,13 @@ def markov_model_first_order(table):
             ret[last_item][key] /= length
     return ret
 
+def midi_to_csv(notes,filename):
+    csv = ""
+    for i in range(len(notes)):
+        note = notes[i]
+        # write onto csv, each line like: start,pitch,morph_pitch,duration,channel\n
+        # morph pitch == pitch here. It is unused, as well as the channel
+        csv += str(note.start) + "," + str(note.pitch) + "," + str(note.pitch) + "," + str(note.get_duration()) + "," + str(4) + "\n"
+    file = open(filename, "w")
+    file.write(csv)
+    file.close()

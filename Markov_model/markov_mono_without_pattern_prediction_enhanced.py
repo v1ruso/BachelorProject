@@ -7,18 +7,19 @@ from utils.midi_transform import markov_model_first_order
 from utils.midi_transform import find_closest
 NUMBER_OF_PITCHES = 128
 DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_small/'
-NB_ITERATIONS = 100
+NB_ITERATIONS = 50
 ROUND_DURATIONS_DECIMALS = 13
 
 for filename in glob.glob(DATASET_FILEPATH + "prime_midi/*.mid"):
     input_data = pretty_midi.PrettyMIDI(filename)
-    result = pretty_midi.PrettyMIDI()
-    result_program = pretty_midi.instrument_name_to_program("Acoustic Grand Piano")
-    result_instrument = pretty_midi.Instrument(program=result_program)
-
+    
     # Assume monophonic
     notes = input_data.instruments[0].notes
     if len(notes) > 0:
+        result = pretty_midi.PrettyMIDI()
+        result_program = pretty_midi.instrument_name_to_program("Acoustic Grand Piano")
+        result_instrument = pretty_midi.Instrument(program=result_program)
+
         # Statistic model with first order markov model
         pitches,onsets,velocities,durations = parse_midi(notes,round_durations=ROUND_DURATIONS_DECIMALS)
 
