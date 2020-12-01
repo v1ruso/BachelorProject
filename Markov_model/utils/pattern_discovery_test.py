@@ -3,6 +3,8 @@ import numpy as np
 import random
 import pretty_midi
 from midi_transform import parse_midi
+from midi_transform import markov_model_first_order
+from midi_transform import find_closest
 from pattern_discovery import find_biggest_recurring_pattern
 from pattern_discovery import find_occurrences_and_indexes
 from pattern_discovery import find_all_occurrences_and_indexes
@@ -66,13 +68,26 @@ class PatternDiscoveryTest(unittest.TestCase):
         print(transformed_seq)"""
 
     def test_generate_continuation_with_patterns(self):
-        input = pretty_midi.PrettyMIDI("../MIDI_samples/midi_sample_c_major.mid")
-        seq = input.instruments[0].notes
+        input = pretty_midi.PrettyMIDI("../MIDI_samples/midi_sample_a_minor.mid")
+        seq_temp = input.instruments[0].notes
+        # 0) Transform seq_notes so it has correct durations
+        # Statistic model with first order markov model
+        pitches,onsets,velocities,durations = parse_midi(seq_temp)
+        diff_onsets = onsets[1:] - onsets[:len(onsets)-1]
+        markov_diff_onsets = markov_model_first_order(diff_onsets)
+        seq = list()
+        # write current notes, each note ends when the next note starts
+        for i in range(len(seq_temp)-1):
+            note = seq_temp[i]
+            seq.append(pretty_midi.Note(velocity=note.velocity,pitch=note.pitch,start=note.start,end=seq_temp[i+1].start))
+        # special case for last note, as there isn't a next note
+        last_note = seq_temp[len(seq_temp)-1]
+        seq.append(pretty_midi.Note(velocity=last_note.velocity,pitch=last_note.pitch,start=last_note.start,end=last_note.start + find_closest(list(markov_diff_onsets.keys()),last_note.get_duration())))
+
         # 1) Transform sequence of notes into sequence of patterns
         markov,patterns,indexes,transformed_seq = first_order_markov_with_patterns(seq)
-        
         # 2) Generate next patterns
-        nb_iterations = 4
+        nb_iterations = 7
         for i in range(nb_iterations):
             last_pattern = transformed_seq[len(transformed_seq)-1]
             next_pattern = random.choices(list(markov[last_pattern].keys()),weights=markov[last_pattern].values())[0]

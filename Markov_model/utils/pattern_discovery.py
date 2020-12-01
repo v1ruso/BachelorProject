@@ -3,7 +3,7 @@ from midi_transform import markov_model_first_order
 def is_pitch_equal(this,that):
     if this==None or that==None:
         return False
-    return this.pitch == that.pitch
+    return this.pitch == that.pitch and this.get_duration() == that.get_duration()
 
 def find_biggest_recurring_pattern(seq):
     """
@@ -71,7 +71,7 @@ def find_all_occurrences_and_indexes(seq):
     for i in range(len(seq_x)):
         # special case for non recurring patterns: notes that appear only once
         if seq_x[i]!=None:
-            list_patterns.append(seq_x[i])
+            list_patterns.append([seq_x[i]])
             list_indexes.append([i])
     return list_patterns,list_indexes
 

@@ -10,9 +10,9 @@ def find_closest(values,val):
     closest = values[0]
     distance = float("inf")
     for d in values:
-        val = np.abs(d-val)
-        if val < distance:
-            distance = val
+        new_dist = abs(d-val)
+        if new_dist < distance:
+            distance = new_dist
             closest = d
     return closest
 
