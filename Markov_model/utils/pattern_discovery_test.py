@@ -5,6 +5,7 @@ import pretty_midi
 from midi_transform import parse_midi
 from midi_transform import markov_model_first_order
 from midi_transform import find_closest
+from midi_transform import midi_to_csv
 from pattern_discovery import find_biggest_recurring_pattern
 from pattern_discovery import find_occurrences_and_indexes
 from pattern_discovery import find_all_occurrences_and_indexes
@@ -122,6 +123,8 @@ class PatternDiscoveryTest(unittest.TestCase):
         result_instrument.notes = notes
         result.instruments.append(result_instrument)
         result.write("../MIDI_samples/test_generation_with_pattern.mid")
+        # 5) write result into csv file
+        midi_to_csv(notes[len(seq_temp):],"../MIDI_samples/test_generation_with_pattern.csv")
 
 if __name__ == '__main__':
     unittest.main()

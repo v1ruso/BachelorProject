@@ -1,5 +1,6 @@
 import numpy as np
-from midi_transform import markov_model_first_order
+from .midi_transform import markov_model_first_order
+
 def is_pitch_equal(this,that):
     if this==None or that==None:
         return False

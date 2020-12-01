@@ -7,7 +7,6 @@ from similarity_measure import count_substring_in_string
 from similarity_measure import find_all_occurrences_and_indexes
 from similarity_measure import first_order_markov_from_patterns
 import pretty_midi
-from midi_transform import parse_midi
 class SimilarityMeasureTest(unittest.TestCase):
     """def test_similarity_score_works_for_same_length(self):
         seq_main = np.array([0,1,2,3,4,5])
