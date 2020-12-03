@@ -90,3 +90,12 @@ def midi_to_csv(notes,filename):
     file = open(filename, "w")
     file.write(csv)
     file.close()
+
+def csv_to_notes(filename):
+    import csv
+    notes = list()
+    with open(filename) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            notes.append(pretty_midi.Note(velocity=80,start=float(row[0]),pitch=int(row[1]),end=float(row[0])+float(row[3])))
+    return notes

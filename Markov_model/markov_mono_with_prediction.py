@@ -3,22 +3,19 @@ import pretty_midi
 import numpy as np
 import glob
 from utils.midi_transform import parse_midi
-from utils.midi_transform import markov_model_first_order
 from utils.midi_transform import find_closest
 from utils.midi_transform import midi_to_csv
 from utils.pattern_discovery import first_order_markov_with_patterns
+from utils.midi_transform import csv_to_notes
 DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_small/'
-NB_ITERATIONS = 40
-
-for filename in glob.glob(DATASET_FILEPATH + "prime_midi/*.mid"):
-    input_data = pretty_midi.PrettyMIDI(filename)
-    seq_temp = input_data.instruments[0].notes
-
+NB_ITERATIONS = 20
+for filename in glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"):
+    seq_temp = csv_to_notes(filename)
+    
     # 0) Transform seq_notes so it has correct durations
     # Statistic model with first order markov model
     _,onsets,_,_ = parse_midi(seq_temp)
     diff_onsets = onsets[1:] - onsets[:len(onsets)-1]
-    markov_diff_onsets = markov_model_first_order(diff_onsets)
     seq = list()
     # write current notes, each note ends when the next note starts
     for i in range(len(seq_temp)-1):
@@ -26,7 +23,7 @@ for filename in glob.glob(DATASET_FILEPATH + "prime_midi/*.mid"):
         seq.append(pretty_midi.Note(velocity=note.velocity,pitch=note.pitch,start=note.start,end=seq_temp[i+1].start))
     # special case for last note, as there isn't a next note
     last_note = seq_temp[len(seq_temp)-1]
-    seq.append(pretty_midi.Note(velocity=last_note.velocity,pitch=last_note.pitch,start=last_note.start,end=last_note.start + find_closest(list(markov_diff_onsets.keys()),last_note.get_duration())))
+    seq.append(pretty_midi.Note(velocity=last_note.velocity,pitch=last_note.pitch,start=last_note.start,end=last_note.start + find_closest(diff_onsets,last_note.get_duration())))
   
     # 1) Transform sequence of notes into sequence of patterns
     markov,patterns,_,transformed_seq = first_order_markov_with_patterns(seq)
@@ -62,6 +59,6 @@ for filename in glob.glob(DATASET_FILEPATH + "prime_midi/*.mid"):
     result.instruments.append(result_instrument)
     filename = filename.split("/")
     filename = filename[len(filename)-1]
-    result.write(DATASET_FILEPATH + "markov_with_prediction_midi/" + filename)
+    result.write(DATASET_FILEPATH + "markov_with_prediction_midi/" + filename[:len(filename)-3] + "mid")
     # 5) write result into csv file
-    midi_to_csv(notes[len(seq_temp):],DATASET_FILEPATH + "markov_with_prediction_csv/" + filename[:len(filename)-3] + "csv")
+    midi_to_csv(notes[len(seq_temp):],DATASET_FILEPATH + "markov_with_prediction_csv/" + filename)

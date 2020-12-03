@@ -5,16 +5,15 @@ import glob
 from utils.midi_transform import parse_midi
 from utils.midi_transform import markov_model_first_order
 from utils.midi_transform import find_closest
+from utils.midi_transform import csv_to_notes
 NUMBER_OF_PITCHES = 128
 DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_small/'
-NB_ITERATIONS = 50
+NB_ITERATIONS = 30
 ROUND_DURATIONS_DECIMALS = 13
 
-for filename in glob.glob(DATASET_FILEPATH + "prime_midi/*.mid"):
-    input_data = pretty_midi.PrettyMIDI(filename)
+for filename in glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"):
+    notes = csv_to_notes(filename)
     
-    # Assume monophonic
-    notes = input_data.instruments[0].notes
     if len(notes) > 0:
         result = pretty_midi.PrettyMIDI()
         result_program = pretty_midi.instrument_name_to_program("Acoustic Grand Piano")
@@ -65,7 +64,7 @@ for filename in glob.glob(DATASET_FILEPATH + "prime_midi/*.mid"):
         result.instruments.append(result_instrument)
         filename = filename.split("/")
         filename = filename[len(filename)-1]
-        result.write(DATASET_FILEPATH + "markov_without_prediction_midi/" + filename)
-        file = open(DATASET_FILEPATH + "markov_without_prediction_csv/" + filename[:len(filename)-3] + "csv", "w")
+        result.write(DATASET_FILEPATH + "markov_without_prediction_midi/" + filename[:len(filename)-3] + "mid")
+        file = open(DATASET_FILEPATH + "markov_without_prediction_csv/" + filename, "w")
         file.write(csv_output_file)
         file.close()
