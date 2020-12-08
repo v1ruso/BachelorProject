@@ -55,7 +55,7 @@ for filename in glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"):
     result = pretty_midi.PrettyMIDI()
     result_program = pretty_midi.instrument_name_to_program("Acoustic Grand Piano")
     result_instrument = pretty_midi.Instrument(program=result_program)
-    result_instrument.notes = notes
+    result_instrument.notes = notes[len(seq_temp):]
     result.instruments.append(result_instrument)
     filename = filename.split("/")
     filename = filename[len(filename)-1]
