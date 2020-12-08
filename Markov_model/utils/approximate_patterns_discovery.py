@@ -94,7 +94,7 @@ def filter_patterns(patterns, notes):
     # now remove empty entries
     result = {}
     for key in new_patterns:
-        if len(new_patterns[key])!=0:
+        if len(new_patterns[key])>1:
             result[key] = new_patterns[key]
     return result
 def find_patterns_in_notes(patterns,notes):

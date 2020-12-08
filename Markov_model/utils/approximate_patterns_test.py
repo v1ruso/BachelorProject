@@ -44,10 +44,6 @@ class ApproximatePatternsTest(unittest.TestCase):
         result_filter = filter_patterns(result,notes)
         for v in result_filter:
             print(str(v) + ": " + str(result_filter[v]))
-        import random
-        rnd = [0,1,2]
-        random.shuffle(rnd)
-        print(rnd)
 
 
     def test_hamming_distance(self):
