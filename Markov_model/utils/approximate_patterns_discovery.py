@@ -62,18 +62,40 @@ def is_note_in_seq(note,seq):
         if n[0] == note[0] and n[1]==note[1]:
             return True
     return False
-def score_per_translation_vector(patterns, notes):
+
+def filter_patterns(patterns, notes):
     """
     patterns: dictionary, keys are translation vectors, values are notes
         which can be transformed into other notes using the key
     """
-    scores = np.zeros(len(patterns.keys()))
-    for i, translation_vector in enumerate(patterns):
-        first_note_time = patterns[translation_vector][0][0]
-        last_note_time = patterns[translation_vector][len(patterns[translation_vector])-1][0]+translation_vector[0]
-        nb_notes_spanned_by_pattern = 0
-        nb_notes_in_pattern = len(patterns[translation_vector])
-        for n in notes:
-            if n[0]>= first_note_time and n[0]<=last_note_time:
-                current_note = (n[0]+translation_vector[0],n[1]+translation_vector[1])        
-    return scores
+    # first transform list of notes into dictionary
+    new_patterns = {}
+    for key in patterns:
+        # transform list of notes from pattern into dictionary
+        temp_notes = {}
+        for n in patterns[key]:
+            temp_notes[n[0]]=n[1]
+        temp_pattern = list()
+        # filter patterns so that a note isn't repeated twice within a pattern
+        for n in patterns[key]:
+            new_note = (n[0]+key[0],n[1]+key[1])
+            if new_note[0] not in temp_notes:
+                temp_pattern.append(n)
+        # now we need to check if all elements are contiguous within a pattern
+        new_patterns[key] = list()
+        for i in range(len(notes)):
+            if notes[i][0] == temp_pattern[0][0] and notes[i][1] == temp_pattern[0][1]:
+                for j in range(i,min(len(notes),len(temp_pattern))):
+                    if notes[j][0] == temp_pattern[j][0] and notes[j][1] == temp_pattern[j][1]:
+                        new_patterns[key].append(temp_pattern[j])
+                    else:
+                        break
+        
+    # now remove empty entries
+    result = {}
+    for key in new_patterns:
+        if len(new_patterns[key])!=0:
+            result[key] = new_patterns[key]
+    return result
+def find_patterns_in_notes(patterns,notes):
+    pass

@@ -2,7 +2,7 @@ import unittest
 from approximate_patterns_discovery import hamming_distance
 from approximate_patterns_discovery import edit_distance
 from approximate_patterns_discovery import find_approximate_patterns
-from approximate_patterns_discovery import score_per_translation_vector
+from approximate_patterns_discovery import filter_patterns
 class ApproximatePatternsTest(unittest.TestCase):
     def test_find_approximate_patterns(self):
         """list_notes = list()
@@ -27,15 +27,28 @@ class ApproximatePatternsTest(unittest.TestCase):
         notes = list()
         notes.append((0.0,0))
         notes.append((0.5,1))
+        notes.append((1.0,2))
 
-        notes.append((1.0,0))
-        notes.append((1.5,1))
+        notes.append((1.5,0))
+        notes.append((2.0,1))
+        notes.append((2.5,2))
 
-        notes.append((2.0,0))
-        notes.append((2.5,1))
+        notes.append((3.0,2))
+        notes.append((3.5,3))
+        notes.append((4.0,4))
+
         result= find_approximate_patterns(notes)
         for v in result:
             print(str(v) + ": " + str(result[v]))
+        print("Result filtered:")
+        result_filter = filter_patterns(result,notes)
+        for v in result_filter:
+            print(str(v) + ": " + str(result_filter[v]))
+        import random
+        rnd = [0,1,2]
+        random.shuffle(rnd)
+        print(rnd)
+
 
     def test_hamming_distance(self):
         seq_1 = "01234"
