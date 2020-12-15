@@ -21,17 +21,26 @@ def edit_distance(s1, s2):
 def find_approximate_patterns(seq_notes):
     """
     based on SIA(TEC) algorithm
+    seq_notes: list of (onset,pitch) elements
     """
     vector_matrix = np.empty((len(seq_notes),len(seq_notes)),dtype=object)
     for i in range(len(seq_notes)): # rows
+        if seq_notes[i]==None:
+            continue
         for j in range(len(seq_notes)): # columns
+            if seq_notes[j]==None:
+                continue
             if j<i:
                 vector_matrix[i,j] = (seq_notes[i][0]-seq_notes[j][0],seq_notes[i][1]-seq_notes[j][1])
             else:
                 vector_matrix[i,j] = (0,0)
     result = {}
     for i in range(len(seq_notes)):
+        if seq_notes[i]==None:
+            continue
         for j in range(len(seq_notes)):
+            if seq_notes[j]==None:
+                continue
             if vector_matrix[i,j][0]==0 and vector_matrix[i,j][1]==0:
                 continue
             else:
@@ -49,13 +58,6 @@ def find_approximate_patterns(seq_notes):
             mtp_datapoints = result[vector]
             mtp_head = vector"""
     return result
-def sort_patterns_by_length(patterns):
-    """
-    """
-    return 0
-def transform_pattern_sequence(patterns):
-
-    return 0
 
 def is_note_in_seq(note,seq):
     for n in seq:
@@ -63,6 +65,13 @@ def is_note_in_seq(note,seq):
             return True
     return False
 
+def are_seqs_equal(seq_1,seq_2):
+    if len(seq_1)!=len(seq_2):
+        return False
+    for i in range(len(seq_1)):
+        if seq_1[i][0]!=seq_2[i][0] or seq_1[i][1]!=seq_2[i][1]:
+            return False
+    return True
 def filter_patterns(patterns, notes):
     """
     patterns: dictionary, keys are translation vectors, values are notes
@@ -82,20 +91,38 @@ def filter_patterns(patterns, notes):
             if new_note[0] not in temp_notes:
                 temp_pattern.append(n)
         # now we need to check if all elements are contiguous within a pattern
+        # TODO correct this
         new_patterns[key] = list()
         for i in range(len(notes)):
+            if notes[i]==None:
+                continue
             if notes[i][0] == temp_pattern[0][0] and notes[i][1] == temp_pattern[0][1]:
                 for j in range(i,min(len(notes),len(temp_pattern))):
                     if notes[j][0] == temp_pattern[j][0] and notes[j][1] == temp_pattern[j][1]:
                         new_patterns[key].append(temp_pattern[j])
                     else:
                         break
-        
     # now remove empty entries
     result = {}
     for key in new_patterns:
         if len(new_patterns[key])>1:
             result[key] = new_patterns[key]
     return result
+def find_biggest_pattern_in_patterns(dict):
+    max_length = -1
+    pattern = None
+    trans_vector = None
+    for key in dict:
+        if len(dict[key])>max_length:
+            max_length=len(dict[key])
+            trans_vector = key
+            pattern = dict[key]
+    return pattern, trans_vector
+def find_all_trans_vector_with_pattern(dict,pattern):
+    ret = list()
+    for key in dict:
+        if are_seqs_equal(pattern,dict[key]):
+            ret.append(key)
+    return ret
 def find_patterns_in_notes(patterns,notes):
     pass
