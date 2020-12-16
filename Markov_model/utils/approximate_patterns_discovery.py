@@ -91,14 +91,13 @@ def filter_patterns(patterns, notes):
             if new_note[0] not in temp_notes:
                 temp_pattern.append(n)
         # now we need to check if all elements are contiguous within a pattern
-        # TODO correct this
         new_patterns[key] = list()
         for i in range(len(notes)):
             if notes[i]==None:
                 continue
             if notes[i][0] == temp_pattern[0][0] and notes[i][1] == temp_pattern[0][1]:
-                for j in range(i,min(len(notes),len(temp_pattern))):
-                    if notes[j][0] == temp_pattern[j][0] and notes[j][1] == temp_pattern[j][1]:
+                for j in range(0,min(len(notes),len(temp_pattern))):
+                    if notes[j+i][0] == temp_pattern[j][0] and notes[j+i][1] == temp_pattern[j][1]:
                         new_patterns[key].append(temp_pattern[j])
                     else:
                         break
@@ -124,5 +123,90 @@ def find_all_trans_vector_with_pattern(dict,pattern):
         if are_seqs_equal(pattern,dict[key]):
             ret.append(key)
     return ret
+
+def find_pattern_with_indices(seq,list_patterns,pattern_to_indices,index_pattern):
+    """
+    seq: list of (onset,pitch) elements
+    pattern_to_indices: already existent patterns
+    index_pattern: key where to add the new pattern, i.e. pattern_to_indices[index_pattern] = ...
+    This method is supposed to find one pattern.
+    """
+    result = find_approximate_patterns(seq)
+    result_filter = filter_patterns(result,seq)
+    pattern,trans_vector = find_biggest_pattern_in_patterns(result_filter)
+    if pattern!=None:
+        all_trans_vectors = find_all_trans_vector_with_pattern(result_filter,pattern)
+        all_trans_vectors.insert(0,(0,0))
+        index_before = index_pattern
+        for trans in all_trans_vectors:
+
+            first_trans_note = (pattern[0][0]+trans[0],pattern[0][1]+trans[1])
+            length_pattern = len(pattern)
+            i = 0
+            current_pattern = list()
+            while i < len(seq):
+                current_note = seq[i]
+                if current_note!=None and current_note[0]==first_trans_note[0] and current_note[1] == first_trans_note[1]:
+                    pattern_to_indices[index_pattern] = i
+                    for j in range(length_pattern):
+                        trans_note = (pattern[j][0]+trans[0],pattern[j][1]+trans[1])
+                        current_pattern.append(trans_note)
+                        seq[i+j] = None
+                    break
+                else:
+                    i+=1
+            index_pattern+=1
+            list_patterns.append(current_pattern)
+        return pattern,index_pattern,all_trans_vectors
+    return pattern,index_pattern,None
+
+def is_list_empty(seq):
+    for n in seq:
+        if n!=None:
+            return False
+    return True
+
+def find_all_patterns(seq):
+    """
+    finds all patterns in a list of (onset,pitch) tuples.
+    Ex: let a certain sequence be 0,1,2,0,1,2,2,3,4,1,3,1,3
+    Then a first pattern would be [0,1,2], appearing three times, 
+    the third time being shifted up by 2 ([2,3,4]).
+    A second pattern would be [1,3], appearing twice.
+    In this case, the function should return:
+    list_patterns = [[0,1,2],[0,1,2],[2,3,4],[1,3],[1,3]]
+    patterns_to_indices = {
+        0: [0],
+        1: [3],
+        2: [6],
+        3: [9],
+        4: [11]
+    }
+    """
+    list_patterns = list()
+    pattern_to_indices = {}
+    index_pattern = 0
+    trans_vectors = list()
+    while not is_list_empty(seq):
+        pattern,index_pattern,all_trans_vectors = find_pattern_with_indices(seq,list_patterns,pattern_to_indices,index_pattern)
+        if pattern==None: # case only one note at the end
+            for i in range(len(seq)):
+                if seq[i]!=None:
+                    list_patterns.append([seq[i]])
+                    pattern_to_indices[index_pattern] = i
+                    index_pattern+=1
+                    trans_vectors.append((0,0))
+            break
+        for i in range(len(all_trans_vectors)):
+            trans_vectors.append(all_trans_vectors[i])
+    return list_patterns,pattern_to_indices,trans_vectors
+def midi_notes_to_tuples(notes):
+    """
+    converts a sequence of pretty_midi notes into a list of (onset,pitch) elements
+    """
+    seq = list()
+    for n in notes:
+        seq.append((n.start,n.pitch))
+    return seq
 def find_patterns_in_notes(patterns,notes):
     pass

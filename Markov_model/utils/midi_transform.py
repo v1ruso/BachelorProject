@@ -67,6 +67,8 @@ def markov_model_first_order(table):
 
     # special case for the last element
     # need to "fallback" -> go back to a known state
+    probability_known_patterns = 0.9
+    probability_unknown_patterns = 1-probability_known_patterns
     last_item = table[length-1]
     if last_item not in ret:
         ret[last_item] = {}
@@ -79,9 +81,6 @@ def markov_model_first_order(table):
         for key in ret[last_item].keys():
             ret[last_item][key] /= length
     else:
-        # assigns 90% probability to known patterns, 10% for the rest.
-        probability_known_patterns = 0.9
-        probability_unknown_patterns = 1-probability_known_patterns
         keys_ret = list(ret.keys())
         for key in ret[last_item]:
             ret[last_item][key]*=probability_known_patterns
@@ -89,6 +88,16 @@ def markov_model_first_order(table):
         length_keys = len(keys_ret)
         for key in keys_ret:
             ret[last_item][key] = probability_unknown_patterns/length_keys
+    # alpha smoothing for all states
+    for i in range(length-1):
+        item = table[i]
+        keys_ret = list(ret.keys())
+        for key in ret[item]:
+            ret[item][key]*=probability_known_patterns
+            keys_ret.remove(key)
+        length_keys = len(keys_ret)
+        for key in keys_ret:
+            ret[item][key] = probability_unknown_patterns/length_keys
     return ret
 
 def midi_to_csv(notes,filename):
