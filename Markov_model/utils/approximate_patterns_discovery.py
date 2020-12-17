@@ -138,6 +138,7 @@ def find_pattern_with_indices(seq,list_patterns,pattern_to_indices,index_pattern
         all_trans_vectors = find_all_trans_vector_with_pattern(result_filter,pattern)
         all_trans_vectors.insert(0,(0,0))
         index_before = index_pattern
+        ret_trans_vectors = list()
         for trans in all_trans_vectors:
 
             first_trans_note = (pattern[0][0]+trans[0],pattern[0][1]+trans[1])
@@ -155,9 +156,11 @@ def find_pattern_with_indices(seq,list_patterns,pattern_to_indices,index_pattern
                     break
                 else:
                     i+=1
-            index_pattern+=1
-            list_patterns.append(current_pattern)
-        return pattern,index_pattern,all_trans_vectors
+            if len(current_pattern)!=0:
+                index_pattern+=1
+                ret_trans_vectors.append(trans)
+                list_patterns.append(current_pattern)
+        return pattern,index_pattern,ret_trans_vectors
     return pattern,index_pattern,None
 
 def is_list_empty(seq):
@@ -176,11 +179,11 @@ def find_all_patterns(seq):
     In this case, the function should return:
     list_patterns = [[0,1,2],[0,1,2],[2,3,4],[1,3],[1,3]]
     patterns_to_indices = {
-        0: [0],
-        1: [3],
-        2: [6],
-        3: [9],
-        4: [11]
+        0: 0,
+        1: 3,
+        2: 6,
+        3: 9,
+        4: 11
     }
     """
     list_patterns = list()
@@ -200,6 +203,52 @@ def find_all_patterns(seq):
         for i in range(len(all_trans_vectors)):
             trans_vectors.append(all_trans_vectors[i])
     return list_patterns,pattern_to_indices,trans_vectors
+
+def collapse_pattern_to_indices(trans_vectors):
+    trans_vectors.append((0,0)) # TODO might improve this
+    collapsed_indices_to_pattern = {}
+    current_index = 0
+    i = 0
+    while i<len(trans_vectors)-1:
+        trans_v = trans_vectors[i]
+        if trans_v[0]==0 and trans_v[1]==0:
+            temp_dict = {}
+            temp_index = 0.0
+            temp_dict[temp_index] = list()
+            temp_dict[temp_index].append(i)
+            for j in range(i+1,len(trans_vectors)):
+                current_trans = trans_vectors[j]
+                if current_trans[0]==0 and current_trans[1]==0:
+                    for key in temp_dict:
+                        collapsed_indices_to_pattern[current_index] = temp_dict[key]
+                        current_index+=1
+                    break
+                if current_trans[1] not in temp_dict:
+                    temp_dict[current_trans[1]] = list()
+                temp_dict[current_trans[1]].append(j)
+            else:
+                continue
+        i+=1
+    return collapsed_indices_to_pattern
+
+def transform_collapsed_and_indices(collapsed,pattern_to_indices):
+    true_indices = {}
+    for key in collapsed:
+        true_indices[key] = list()
+        for val in collapsed[key]:
+            true_indices[key].append(pattern_to_indices[val])
+    return true_indices
+def transform_back_into_seq(true_indices):
+    reversed_indices = {}
+    for key in true_indices:
+        for val in true_indices[key]:
+            reversed_indices[val] = key
+    seq = list()
+    keys = list(reversed_indices.keys())
+    keys.sort()
+    for val in keys:
+        seq.append(reversed_indices[val])
+    return seq
 def midi_notes_to_tuples(notes):
     """
     converts a sequence of pretty_midi notes into a list of (onset,pitch) elements

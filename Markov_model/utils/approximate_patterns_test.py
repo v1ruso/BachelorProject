@@ -2,6 +2,9 @@ import unittest
 from approximate_patterns_discovery import hamming_distance
 from approximate_patterns_discovery import edit_distance
 from approximate_patterns_discovery import find_all_patterns
+from approximate_patterns_discovery import collapse_pattern_to_indices
+from approximate_patterns_discovery import transform_collapsed_and_indices
+from approximate_patterns_discovery import transform_back_into_seq
 class ApproximatePatternsTest(unittest.TestCase):
     def test_find_approximate_patterns(self):
         """list_notes = list()
@@ -24,23 +27,24 @@ class ApproximatePatternsTest(unittest.TestCase):
             print(str(v) + ": " + str(result[v]))
         """
         notes = list()
-        notes.append((0.0,0))
-        notes.append((0.5,1))
-        notes.append((1.0,2))
+        notes.append((0.0,2))
+        notes.append((0.5,0))
+        notes.append((1.0,1))
 
-        notes.append((1.5,0))
+        notes.append((1.5,3))
         notes.append((2.0,1))
         notes.append((2.5,2))
 
         notes.append((3.0,2))
-        notes.append((3.5,3))
-        notes.append((4.0,4))
+        notes.append((3.5,1))
+        notes.append((4.0,0))
 
-        notes.append((4.5,1))
-        notes.append((5.0,3))
-        notes.append((5.5,1))
-        notes.append((6.0,3))
-        notes.append((6.5,8))
+        notes.append((4.5,2))
+        notes.append((5.0,1))
+        notes.append((5.5,0))
+        notes.append((6.0,0))
+
+        notes.append((6.5,0))
         list_patterns,pattern_to_indices,trans_vectors = find_all_patterns(notes)
         print(notes)
         print("Patterns:")
@@ -49,7 +53,16 @@ class ApproximatePatternsTest(unittest.TestCase):
         print(pattern_to_indices)
         print("Trans_vectors:")
         print(trans_vectors)
+        collapsed = collapse_pattern_to_indices(trans_vectors)
+        print("Collapsed:")
+        print(collapsed)
+        true_indices = transform_collapsed_and_indices(collapsed,pattern_to_indices)
+        print("True indices")
+        print(true_indices)
 
+        print("Transformed back")
+        seq = transform_back_into_seq(true_indices)
+        print(seq)
     def test_hamming_distance(self):
         seq_1 = "01234"
         seq_2 = "01224"
