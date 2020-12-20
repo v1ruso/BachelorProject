@@ -5,6 +5,7 @@ from approximate_patterns_discovery import find_all_patterns
 from approximate_patterns_discovery import collapse_pattern_to_indices
 from approximate_patterns_discovery import transform_collapsed_and_indices
 from approximate_patterns_discovery import transform_back_into_seq
+from midi_transform import markov_model_first_order
 class ApproximatePatternsTest(unittest.TestCase):
     def test_find_approximate_patterns(self):
         """list_notes = list()
@@ -72,5 +73,9 @@ class ApproximatePatternsTest(unittest.TestCase):
         seq_1 = "01234"
         seq_2 = "0234"
         self.assertEqual(edit_distance(seq_1,seq_2),1)
+    """def test_midi_markov(self):
+        seq = "AABCDDB"
+        print(markov_model_first_order(seq))
+"""
 if __name__ == '__main__':
     unittest.main()

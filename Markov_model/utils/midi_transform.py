@@ -80,24 +80,24 @@ def markov_model_first_order(table):
                 ret[last_item][next_item] = 1
         for key in ret[last_item].keys():
             ret[last_item][key] /= length
-    else:
-        keys_ret = list(ret.keys())
-        for key in ret[last_item]:
-            ret[last_item][key]*=probability_known_patterns
-            keys_ret.remove(key)
-        length_keys = len(keys_ret)
-        for key in keys_ret:
-            ret[last_item][key] = probability_unknown_patterns/length_keys
+    
+    probability_keys = {}
+    for item in table:
+        if item in probability_keys:
+            probability_keys[item]+=1
+        else:
+            probability_keys[item]=1
+    for key in probability_keys:
+        probability_keys[key]/=length
     # alpha smoothing for all states
-    for i in range(length-1):
-        item = table[i]
+    for item in ret:
         keys_ret = list(ret.keys())
         for key in ret[item]:
             ret[item][key]*=probability_known_patterns
+            ret[item][key] += probability_keys[key]*probability_unknown_patterns
             keys_ret.remove(key)
-        length_keys = len(keys_ret)
         for key in keys_ret:
-            ret[item][key] = probability_unknown_patterns/length_keys
+            ret[item][key] = probability_keys[key]*probability_unknown_patterns
     return ret
 
 def midi_to_csv(notes,filename):

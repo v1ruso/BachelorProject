@@ -97,6 +97,8 @@ def filter_patterns(patterns, notes):
                 continue
             if notes[i][0] == temp_pattern[0][0] and notes[i][1] == temp_pattern[0][1]:
                 for j in range(0,min(len(notes),len(temp_pattern))):
+                    if notes[j+i]==None:
+                        continue
                     if notes[j+i][0] == temp_pattern[j][0] and notes[j+i][1] == temp_pattern[j][1]:
                         new_patterns[key].append(temp_pattern[j])
                     else:
