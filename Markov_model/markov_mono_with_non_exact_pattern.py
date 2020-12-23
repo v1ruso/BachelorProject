@@ -12,8 +12,12 @@ from utils.approximate_patterns_discovery import transform_collapsed_and_indices
 from utils.approximate_patterns_discovery import transform_back_into_seq
 from utils.approximate_patterns_discovery import midi_notes_to_tuples
 
-DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_small/'
+DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_large/'
 NB_ITERATIONS = 20
+NB_FILES = len(glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"))
+counter = 0
+steps = int(NB_FILES*0.01)
+print()
 for filename in glob.glob(DATASET_FILEPATH+"prime_csv/*.csv"):
     seq_temp = csv_to_notes(filename)
     # 0) Transform seq_temp so it has correct durations
@@ -71,3 +75,7 @@ for filename in glob.glob(DATASET_FILEPATH+"prime_csv/*.csv"):
     result.write(DATASET_FILEPATH + "markov_with_non_exact_prediction_midi/" + filename[:len(filename)-3] + "mid")
     # 5) write result into csv file
     midi_to_csv(notes_to_write[len(seq_temp):],DATASET_FILEPATH + "markov_with_non_exact_prediction_csv/" + filename)
+    counter+=1
+    if counter%steps==0:
+        print("\033[A\033[A")
+        print("Progress: " + str(counter/steps) + "%")

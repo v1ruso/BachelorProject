@@ -7,10 +7,13 @@ from utils.midi_transform import markov_model_first_order
 from utils.midi_transform import find_closest
 from utils.midi_transform import csv_to_notes
 NUMBER_OF_PITCHES = 128
-DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_small/'
+DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_large/'
 NB_ITERATIONS = 30
 ROUND_DURATIONS_DECIMALS = 13
-
+NB_FILES = len(glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"))
+counter = 0
+steps = int(NB_FILES*0.01)
+print()
 for filename in glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"):
     notes = csv_to_notes(filename)
     
@@ -68,3 +71,7 @@ for filename in glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"):
         file = open(DATASET_FILEPATH + "markov_without_prediction_csv/" + filename, "w")
         file.write(csv_output_file)
         file.close()
+    counter+=1
+    if counter%steps==0:
+        print("\033[A\033[A")
+        print("Progress: " + str(counter/steps) + "%")

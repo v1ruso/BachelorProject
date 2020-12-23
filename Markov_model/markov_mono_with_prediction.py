@@ -7,8 +7,12 @@ from utils.midi_transform import find_closest
 from utils.midi_transform import midi_to_csv
 from utils.pattern_discovery import first_order_markov_with_patterns
 from utils.midi_transform import csv_to_notes
-DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_small/'
+DATASET_FILEPATH = '../Datasets/PPDD-Sep2018_sym_mono_large/'
 NB_ITERATIONS = 20
+NB_FILES = len(glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"))
+counter = 0
+steps = int(NB_FILES*0.01)
+print()
 for filename in glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"):
     seq_temp = csv_to_notes(filename)
     
@@ -62,3 +66,7 @@ for filename in glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"):
     result.write(DATASET_FILEPATH + "markov_with_prediction_midi/" + filename[:len(filename)-3] + "mid")
     # 5) write result into csv file
     midi_to_csv(notes[len(seq_temp):],DATASET_FILEPATH + "markov_with_prediction_csv/" + filename)
+    counter+=1
+    if counter%steps==0:
+        print("\033[A\033[A")
+        print("Progress: " + str(counter/steps) + "%")

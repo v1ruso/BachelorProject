@@ -2,25 +2,20 @@ import unittest
 import numpy as np
 import random
 import pretty_midi
-from midi_transform import parse_midi
 from midi_transform import markov_model_first_order
-from midi_transform import find_closest
-from midi_transform import midi_to_csv
-from pattern_discovery import find_biggest_recurring_pattern
-from pattern_discovery import find_occurrences_and_indexes
-from pattern_discovery import find_all_occurrences_and_indexes
-from pattern_discovery import first_order_markov_with_patterns
 class PatternDiscoveryTest(unittest.TestCase):
     def test_find_biggest_recurring_pattern(self):
-        input = pretty_midi.PrettyMIDI("../MIDI_samples/midi_sample_c_major.mid")
+        input = pretty_midi.PrettyMIDI("midi_sample_c_major_cropped.mid")
         seq = input.instruments[0].notes
         result = pretty_midi.PrettyMIDI()
-        result_program = pretty_midi.instrument_name_to_program("Acoustic Grand Piano")
-        result_instrument = pretty_midi.Instrument(program=result_program)
-        result_instrument.notes,index = find_biggest_recurring_pattern(seq)
-        result.instruments.append(result_instrument)
-        result.write("../MIDI_samples/test_biggest_recurring_pattern.mid")
-
+        notes = list()
+        for n in seq:
+            notes.append(n.pitch)
+        print("MARKOV")
+        mm1 = markov_model_first_order(notes)
+        for n in mm1:
+            print(str(n) + ": " + str(mm1[n]))
+    """
     def test_find_occurrences_and_indexes(self):
         input = pretty_midi.PrettyMIDI("../MIDI_samples/midi_sample_c_major.mid")
         seq = input.instruments[0].notes
@@ -45,7 +40,6 @@ class PatternDiscoveryTest(unittest.TestCase):
                 result_instrument.notes.append(notes[i])
         result.instruments.append(result_instrument)
         result.write("../MIDI_samples/test_occurrences_2.mid")
-    """
     def test_find_all_recurring_pattern(self):
         input = pretty_midi.PrettyMIDI("../MIDI_samples/midi_sample_c_major.mid")
         seq = input.instruments[0].notes
@@ -54,8 +48,7 @@ class PatternDiscoveryTest(unittest.TestCase):
         print(patterns)
         print("Indexes:")
         print(indexes)
-    """
-    """def test_first_order_markov_model(self):
+    def test_first_order_markov_model(self):
         input = pretty_midi.PrettyMIDI("../MIDI_samples/midi_sample_c_major.mid")
         seq = input.instruments[0].notes
         markov,patterns,indexes,transformed_seq = first_order_markov_with_patterns(seq)
@@ -66,7 +59,7 @@ class PatternDiscoveryTest(unittest.TestCase):
         print("\nMarkov:")
         print(markov)
         print("\nTransformed sequence")
-        print(transformed_seq)"""
+        print(transformed_seq)
 
     def test_generate_continuation_with_patterns(self):
         input = pretty_midi.PrettyMIDI("../MIDI_samples/midi_sample_a_minor.mid")
@@ -125,6 +118,6 @@ class PatternDiscoveryTest(unittest.TestCase):
         result.write("../MIDI_samples/test_generation_with_pattern.mid")
         # 5) write result into csv file
         midi_to_csv(notes[len(seq_temp):],"../MIDI_samples/test_generation_with_pattern.csv")
-
+"""
 if __name__ == '__main__':
     unittest.main()
