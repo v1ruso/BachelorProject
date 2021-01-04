@@ -23,7 +23,7 @@ for filename in glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"):
         result_instrument = pretty_midi.Instrument(program=result_program)
 
         # Statistic model with first order markov model
-        pitches,onsets,velocities,durations = parse_midi(notes,round_durations=ROUND_DURATIONS_DECIMALS)
+        pitches,onsets,velocities,_ = parse_midi(notes,round_durations=ROUND_DURATIONS_DECIMALS)
 
         # difference of onsets, will be used as durations
         diff_onsets = onsets[1:] - onsets[:len(onsets)-1]
