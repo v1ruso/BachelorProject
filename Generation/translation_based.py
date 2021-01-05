@@ -275,6 +275,9 @@ def transform_collapsed_and_indices(collapsed,pattern_to_indices):
     return true_indices
 
 def transform_back_into_seq(true_indices):
+    """
+    Given the indices of the prime, returns a sequence of patterns.
+    """
     reversed_indices = {}
     for key in true_indices:
         for val in true_indices[key]:
@@ -300,7 +303,10 @@ def midi_notes_to_tuples(notes):
 def generate_prediction_with_translation_based(filename, patterns_to_generate = 4,with_smoothing=False,probability_known_patterns=0.9):
     """
     filename: string of the filename to read, has to be a midi (.mid) file.
-
+    patterns_to_generate: the number of patterns to generate in the continuation
+    with_smoothing: default False. Whether the continuation should have additive smoothing or not.
+    probability_known_patterns: only useful when with_smoothing is set to True. It is the probability assigned to known patterns,
+    1 - probability_known_patterns will be the probilities assigned to unknown patterns. Needs to be between 0 and 1.
     """
     NB_ITERATIONS = patterns_to_generate
     seq_temp = pretty_midi.PrettyMIDI(filename).instruments[0].notes
@@ -335,6 +341,7 @@ def generate_prediction_with_translation_based(filename, patterns_to_generate = 
     notes_to_write = list()
     # need index first pattern and length of pattern
     first_pattern = notes[true_indices[seq[0]][0]:true_indices[seq[0]][0]+len(list_patterns[collapsed[seq[0]][0]])]
+    # special case for the first pattern, as there is no previous note to base the duration on.
     first_note = first_pattern[0]
     notes_to_write.append(first_note)
     for i in range(1,len(first_pattern)):
@@ -342,6 +349,7 @@ def generate_prediction_with_translation_based(filename, patterns_to_generate = 
         previous_note = notes_to_write[len(notes_to_write)-1]
         new_note = pretty_midi.Note(velocity=current_note.velocity,pitch=current_note.pitch,start=previous_note.end,end=previous_note.end+current_note.get_duration())
         notes_to_write.append(new_note)
+    # for the other patterns
     for i in range(1,len(seq)):
         current_pattern = notes[true_indices[seq[i]][0]:true_indices[seq[i]][0]+len(list_patterns[collapsed[seq[i]][0]])]
         for j in range(len(current_pattern)):
@@ -362,6 +370,13 @@ def generate_prediction_with_translation_based(filename, patterns_to_generate = 
     show_notes(result_instrument.notes)
 
 def generate_prediction_with_translation_based_for_dataset(dataset_filepath, patterns_to_generate = 20,with_smoothing=True,probability_known_states=0.9):
+    """
+    dataset_filepath: string of the dataset path to read from.
+    patterns_to_generate: the number of patterns to generate in the continuation
+    with_smoothing: default True. Whether the continuation should have additive smoothing or not.
+    probability_known_patterns: only useful when with_smoothing is set to True. It is the probability assigned to known patterns,
+    1 - probability_known_patterns will be the probilities assigned to unknown patterns. Needs to be between 0 and 1.
+    """
     DATASET_FILEPATH = dataset_filepath
     NB_ITERATIONS = patterns_to_generate
     NB_FILES = len(glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"))
@@ -399,6 +414,7 @@ def generate_prediction_with_translation_based_for_dataset(dataset_filepath, pat
         # need to use collapsed, and list of patterns and seq
         notes_to_write = list()
         # need index first pattern and length of pattern
+        # special case for the first pattern
         first_pattern = notes[true_indices[seq[0]][0]:true_indices[seq[0]][0]+len(list_patterns[collapsed[seq[0]][0]])]
         first_note = first_pattern[0]
         notes_to_write.append(first_note)

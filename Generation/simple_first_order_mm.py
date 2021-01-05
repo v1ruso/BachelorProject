@@ -7,7 +7,10 @@ from utility import *
 def generate_prediction_with_simple_markov(filename, notes_to_generate = 4,with_smoothing=False,probability_known_states=0.9):
     """
     filename: string of the filename to read, has to be a midi (.mid) file.
-
+    notes_to_generate: the number of notes to generate in the continuation
+    with_smoothing: default False. Whether the continuation should have additive smoothing or not.
+    probability_known_patterns: only useful when with_smoothing is set to True. It is the probability assigned to known patterns,
+    1 - probability_known_patterns will be the probilities assigned to unknown patterns. Needs to be between 0 and 1.
     """
     NB_ITERATIONS = notes_to_generate
     notes = pretty_midi.PrettyMIDI(filename).instruments[0].notes
@@ -59,6 +62,13 @@ def generate_prediction_with_simple_markov(filename, notes_to_generate = 4,with_
 
 
 def generate_prediction_with_simple_markov_for_dataset(dataset_filepath, notes_to_generate = 30,with_smoothing=True,probability_known_states=0.9):
+    """
+    dataset_filepath: string of the dataset path to read from.
+    notes_to_generate: the number of notes to generate in the continuation
+    with_smoothing: default True. Whether the continuation should have additive smoothing or not.
+    probability_known_patterns: only useful when with_smoothing is set to True. It is the probability assigned to known patterns,
+    1 - probability_known_patterns will be the probilities assigned to unknown patterns. Needs to be between 0 and 1.
+    """
     nb_iterations = notes_to_generate
     counter = 0
     nb_files = len(glob.glob(dataset_filepath + "prime_csv/*.csv"))

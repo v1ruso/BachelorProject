@@ -112,7 +112,10 @@ def first_order_markov_with_patterns(seq,with_smoothing=False,probability_known_
 def generate_prediction_with_string_based(filename, patterns_to_generate = 4,with_smoothing=False,probability_known_patterns=0.9):
     """
     filename: string of the filename to read, has to be a midi (.mid) file.
-
+    patterns_to_generate: the number of patterns to generate in the continuation
+    with_smoothing: default False. Whether the continuation should have additive smoothing or not.
+    probability_known_patterns: only useful when with_smoothing is set to True. It is the probability assigned to known patterns,
+    1 - probability_known_patterns will be the probilities assigned to unknown patterns. Needs to be between 0 and 1.
     """
     NB_ITERATIONS = patterns_to_generate
     seq_temp = pretty_midi.PrettyMIDI(filename).instruments[0].notes
@@ -167,6 +170,13 @@ def generate_prediction_with_string_based(filename, patterns_to_generate = 4,wit
     show_notes(result_instrument.notes)
 
 def generate_prediction_with_string_based_for_dataset(dataset_filepath, patterns_to_generate = 20,with_smoothing=True,probability_known_states=0.9):
+    """
+    dataset_filepath: string of the dataset path to read from.
+    patterns_to_generate: the number of patterns to generate in the continuation
+    with_smoothing: default True. Whether the continuation should have additive smoothing or not.
+    probability_known_patterns: only useful when with_smoothing is set to True. It is the probability assigned to known patterns,
+    1 - probability_known_patterns will be the probilities assigned to unknown patterns. Needs to be between 0 and 1.
+    """
     DATASET_FILEPATH = dataset_filepath
     NB_ITERATIONS = patterns_to_generate
     NB_FILES = len(glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"))
