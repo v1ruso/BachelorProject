@@ -109,61 +109,61 @@ def evaluate_continuation(original, generated, last_onset_prime,
 
 
 def score_cs(fn_list, alg_names, files_dict, cont_true, prime):
-card_scores = []
-for alg in alg_names:
-    print(f'Scoring {alg} with cardinality score')
-    for fn in tqdm(fn_list):
-        # the generated file name may have additions to original file name
-        generated_fn = next(
-            (alg_fn for alg_fn in files_dict[alg].keys()
-             if re.search(fn, alg_fn)),
-            None
-        )
-        true_df = cont_true[fn]
-        gen_df = files_dict[alg][generated_fn]
-        prime_final_onset = prime[fn].iloc[-1]['onset']
-        cs_score = evaluate_continuation(
-            true_df,
-            gen_df,
-            prime_final_onset,
-            0.5, 2.0, 10.0
-        )
-        cs_score['fn'] = fn
-        cs_score['Model'] = alg
-        card_scores.append(cs_score)
-card_df = pd.concat(card_scores, axis=0)
-data = card_df.melt(
-    id_vars=['fn', 'Onset', 'Model'],
-    value_vars=['Precision', 'Recall', 'F1'],
-    var_name="measure",
-    value_name="Score"
-)
-
-### START MODIFICATION
-data['Onset'] = data['Onset'].astype(float)
-data['Score'] = data['Score'].astype(float)
-### END MODIFICATION
-
-plt.figure()
-sns.set_style("whitegrid")
-g = sns.FacetGrid(
-    data,
-    col='measure',
-    hue='Model',
-    hue_order=config.MODEL_DIRS.keys(),
-    hue_kws={
-        'marker': ['o', 'v', 's', 'D'],
-        'linestyle' : [":","--","-", "-."]
-    }
+    card_scores = []
+    for alg in alg_names:
+        print(f'Scoring {alg} with cardinality score')
+        for fn in tqdm(fn_list):
+            # the generated file name may have additions to original file name
+            generated_fn = next(
+                (alg_fn for alg_fn in files_dict[alg].keys()
+                 if re.search(fn, alg_fn)),
+                None
+            )
+            true_df = cont_true[fn]
+            gen_df = files_dict[alg][generated_fn]
+            prime_final_onset = prime[fn].iloc[-1]['onset']
+            cs_score = evaluate_continuation(
+                true_df,
+                gen_df,
+                prime_final_onset,
+                0.5, 2.0, 10.0
+            )
+            cs_score['fn'] = fn
+            cs_score['Model'] = alg
+            card_scores.append(cs_score)
+    card_df = pd.concat(card_scores, axis=0)
+    data = card_df.melt(
+        id_vars=['fn', 'Onset', 'Model'],
+        value_vars=['Precision', 'Recall', 'F1'],
+        var_name="measure",
+        value_name="Score"
     )
-g = g.map(
-    sns.lineplot,
-    'Onset',
-    'Score',
-    # style='Model',
-    # style_order=config.MODEL_DIRS.keys(),
-    # markers=['o', 'v', 's']
-).add_legend()
-filename = op.join(config.OUTPUT_FOLDER, '{}_cs_scores.png'.format(config.FILENAME_FRAGMENT))
-plt.savefig(filename, dpi=300)
+
+    ### START MODIFICATION
+    data['Onset'] = data['Onset'].astype(float)
+    data['Score'] = data['Score'].astype(float)
+    ### END MODIFICATION
+
+    plt.figure()
+    sns.set_style("whitegrid")
+    g = sns.FacetGrid(
+        data,
+        col='measure',
+        hue='Model',
+        hue_order=config.MODEL_DIRS.keys(),
+        hue_kws={
+            'marker': ['o', 'v', 's', 'D'],
+            'linestyle' : [":","--","-", "-."]
+        }
+        )
+    g = g.map(
+        sns.lineplot,
+        'Onset',
+        'Score',
+        # style='Model',
+        # style_order=config.MODEL_DIRS.keys(),
+        # markers=['o', 'v', 's']
+    ).add_legend()
+    filename = op.join(config.OUTPUT_FOLDER, '{}_cs_scores.png'.format(config.FILENAME_FRAGMENT))
+    plt.savefig(filename, dpi=300)
 
