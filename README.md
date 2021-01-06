@@ -9,6 +9,6 @@ Here's how to run the continuation programs.
 - Download the <a href="https://github.com/BeritJanssen/PatternsForPrediction/tree/mirex2019">evaluation code</a>, and follow the instructions. 
 - Copy and paste the content of [config_corrected.py](Generation/config_corrected.py) into config.py (in the newly downloaded evaluation folder), and modify "OUTPUT_FOLDER", "DATASET_PATH" and "FILENAME_FRAGMENT".
 - Edit cs.py (in the evaluation code) to [cs_corrected.py](Generation/cs_corrected.py) (copy and paste the code).
-- Run the jupyter notebook Generation/Generation.ipynb.
+- Run the jupyter notebook [Generation/Generation.ipynb](Generation/Generation.ipynb).
 
 All the code necessary to find patterns and produce the continuations is available in [Generation/utility.py](Generation/utility.py), [Generation/simple_first_order_mm.py](Generation/simple_first_order_mm.py), [Generation/string_based.py](Generation/string_based.py) and [Generation/translation_based.py](Generation/translation_based.py).
