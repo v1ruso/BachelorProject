@@ -11,4 +11,4 @@ Here's how to run the continuation programs.
 - Edit cs.py to [cs_corrected.py](Generation/cs_corrected.py) (copy and paste the code).
 - Run the jupyter notebook Generation/Generation.ipynb.
 
-All the code necessary to find patterns and produce the continuation is available in the .py files in Generation.
+All the code necessary to find patterns and produce the continuations is available in the .py files in Generation.
