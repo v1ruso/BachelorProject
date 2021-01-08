@@ -129,7 +129,6 @@ def generate_prediction_with_simple_markov_for_dataset(dataset_filepath, notes_t
             file.write(csv_output_file)
             file.close()
         counter+=1
-        if counter%steps==0:
-            print("\033[A\033[A")
-            print("\rProgress: " + str(counter/steps) + "%")
+        if steps!=0 and counter%steps==0:
+            print("\rProgress: " + str(counter/steps) + "%",end='')
 #generate_prediction_with_simple_markov_for_dataset('../Datasets/PPDD-Sep2018_sym_mono_small/')

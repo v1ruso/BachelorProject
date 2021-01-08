@@ -237,7 +237,6 @@ def generate_prediction_with_string_based_for_dataset(dataset_filepath, patterns
         # 5) write result into csv file
         midi_to_csv(notes[len(seq_temp):],DATASET_FILEPATH + "markov_with_prediction_csv/" + filename)
         counter+=1
-        if counter%steps==0:
-            print("\033[A\033[A")
-            print("Progress: " + str(counter/steps) + "%")
+        if steps!=0 and counter%steps==0:
+            print("\rProgress: " + str(counter/steps) + "%",end='')
 #generate_prediction_with_string_based_for_dataset('../Datasets/PPDD-Sep2018_sym_mono_small/')
