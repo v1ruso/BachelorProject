@@ -73,7 +73,6 @@ def generate_prediction_with_simple_markov_for_dataset(dataset_filepath, notes_t
     counter = 0
     nb_files = len(glob.glob(dataset_filepath + "prime_csv/*.csv"))
     steps = int(nb_files*0.01)
-    print()
     for filename in glob.glob(dataset_filepath + "prime_csv/*.csv"):
         notes = csv_to_notes(filename)
     

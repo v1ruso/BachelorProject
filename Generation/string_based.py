@@ -182,7 +182,6 @@ def generate_prediction_with_string_based_for_dataset(dataset_filepath, patterns
     NB_FILES = len(glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"))
     counter = 0
     steps = int(NB_FILES*0.01)
-    print()
     for filename in glob.glob(DATASET_FILEPATH + "prime_csv/*.csv"):
         seq_temp = csv_to_notes(filename)
         
