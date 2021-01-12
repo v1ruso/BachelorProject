@@ -12,3 +12,7 @@ Here's how to run the continuation programs.
 - Run the jupyter notebook [Generation/Generation.ipynb](Generation/Generation.ipynb).
 
 All the code necessary to find patterns and produce the continuations is available in [Generation/utility.py](Generation/utility.py), [Generation/simple_first_order_mm.py](Generation/simple_first_order_mm.py), [Generation/string_based.py](Generation/string_based.py) and [Generation/translation_based.py](Generation/translation_based.py).
+
+### License
+
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
