@@ -1,4 +1,20 @@
-# BachelorProject
+# Generating Musical Continuations with Repetition
+
+This is the code for reproducing the results from our 2021 SMC paper, "Generating Musical Continuations with Repetition".
+
+If you use it, please cite it:
+
+```
+@inproceedings{Velezdevilla:21,
+  title={Generating Musical Continuations with Repetition},
+  author={Velez de Villa, Sebastian and McLeod, Andrew and Rohrmeier, Martin},
+  booktitle={Sound and Music Computing Conference {(SMC)}},
+  year={2021},
+  pages={131--138}
+}
+```
+
+## Running
 
 Here's how to run the continuation programs.
 
